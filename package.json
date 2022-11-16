@@ -1,0 +1,41 @@
+{
+  "name": "deel-service",
+  "version": "1.0.0",
+  "description": "backend service",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JoseGB2/deel-service.git"
+  },
+  "keywords": [
+    "service",
+    "api",
+    "backend"
+  ],
+  "author": "bjoseg9@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JoseGB2/deel-service/issues"
+  },
+  "homepage": "https://github.com/JoseGB2/deel-service#readme",
+  "dependencies": {
+    "aws-sdk": "^2.643.0",
+    "compression": "^1.7.4",
+    "express": "^4.17.1",
+    "helmet": "^3.21.3",
+    "jsonschema": "^1.2.5",
+    "superagent": "^5.2.2",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^6.8.0",
+    "istanbul": "^0.4.5",
+    "jsdoc": "^3.6.3",
+    "mocha": "^10.1.0",
+    "nodemon": "^2.0.2"
+  }
+}

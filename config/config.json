@@ -1,0 +1,6 @@
+{
+    "api_name": "deelAPI",
+    "api_version": "1",
+    "api_port": 8080,
+    "log_level": "info"
+}
