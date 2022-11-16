@@ -7,10 +7,6 @@ const Validator = new jsonSchema();
 
 const helmet = require('helmet');
 
-const AWS = require('aws-sdk'); // configuring aws region
-AWS.config.region = 'us-east-1';
-const ssm = new AWS.SSM();
-
 const bodyParser = require('body-parser');
 
 const errorResponse = require('./errorResponse');
@@ -34,7 +30,7 @@ module.exports = class App {
     this.appDir = null;
 
     //salesloft config
-    this.salesloftConfig = {};
+    this.DBConfig = {};
   }
   /** 
  * @typedef {object} settings 
@@ -81,7 +77,7 @@ module.exports = class App {
       };
       // TODO: improve this loading the route files
       require(`${this.appDir}/app/system`)();
-      require(`${this.appDir}/app/peopleAPI`)();
+      require(`${this.appDir}/app/deelAPI`)();
 
       //loading middlewares
       this.loadMiddlewares();
@@ -96,41 +92,17 @@ module.exports = class App {
         'api_version': {'type': 'string'},
         'api_name': {'type': 'string'},
         'api_port': {'type': 'number'},
-        'api_port_key_name': {'type': 'string'},
-        'salesloft_domain': {'type': 'string'}
+        'api_port_key_name': {'type': 'string'}
       },
-      'required': ['api_name', 'api_version', 'api_key_name'],
+      'required': ['api_name', 'api_version', ],
     };
 
     return this.readFile(`${this.appDir}/config/config.json`).then((data) =>{
       this.config = JSON.parse(data);
       const validate = Validator.validate(this.config, addressSchema, {throwError: true});
-      this.logger.debug('getting api_key value from ssm');
-
-      // Getting api_key param from AWS ssm
-      return this.retrieveParamFromSSM(this.config.api_key_name);
-    }).then((SSMResult) =>{
-      this.logger.debug(`successfully retrieve of param ${this.config.api_key_name} from ssm`);
-      
-      this.salesloftConfig = {
-        API_KEY_SALESLOFT: SSMResult.Parameter.Value
-      };
     }).catch((err) => {
       this.logger.error(err);
       process.exit(0);
-    });
-  }
-
-  retrieveParamFromSSM(paramName) {
-    const params = {
-      Name: paramName, /* required */
-      WithDecryption: true,
-    };
-
-    return new Promise((resolve, reject) => {
-      ssm.getParameter(params, (err, data) =>{
-                err ? reject(err) : resolve(data); // error || successful response
-      });
     });
   }
 
