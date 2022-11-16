@@ -5,7 +5,7 @@ const endpoints = {
      */
   HEALTH: '/health',
 
-  GET_PEOPLE: '/people',
+  GET_IP: '/reverse-ip',
 };
 
 module.exports = endpoints;
