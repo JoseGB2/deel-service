@@ -7,6 +7,11 @@ on:
   push:
     branches:
       - feature/deployment
+env:
+  GKE_CLUSTER_NAME: deel-cluster-prod
+  GKE_REGION: us-west1
+  HELM_PROJECT_NAME: deel-chart
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -56,6 +61,11 @@ jobs:
       with:
         environment: dev
         imageTag: ${{ steps.commit.outputs.short }}
+        gkeCluster: ${{ GKE_CLUSTER_NAME }}
+        region: ${{ GKE_REGION }}
+        helmChartName: ${{ HELM_PROJECT_NAME }}
+        domain: 'deel-app.dev.gbobo.net'
+
 
   deploy-prod:
     runs-on: ubuntu-latest
@@ -67,3 +77,8 @@ jobs:
       uses: ./.github/actions/deployment
       with:
         environment: prod
+        imageTag: ${{ steps.commit.outputs.short }}
+        gkeCluster: ${{ GKE_CLUSTER_NAME }}
+        region: ${{ GKE_REGION }}
+        helmChartName: ${{ HELM_PROJECT_NAME }}
+        domain: 'deel-app.gbobo.net'

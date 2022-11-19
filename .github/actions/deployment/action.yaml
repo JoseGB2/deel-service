@@ -5,8 +5,30 @@ inputs:
     description: 'environment to deploy'
     required: true
     default: 'dev'
+  imageTag:
+    description: 'Docker image to be added in the helm deployment'
+  gkeCluster:
+    description: 'Cluster name to deploy to'
+  region:
+    description: 'GCP region'
+  helmChartName:
+    description: 'Helm chart name'
+  domain:
+    description: 'domain to be associated'
+
 runs:
   using: "composite"
   steps:
-    - run: echo ${{ inputs.environment}}.
-      shell: bash
+  - name: Install Helm
+    run: |
+      curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+  # Deploy the Docker image to the GKE cluster
+  - name: Deploy to ${{ inputs.environment }}
+    run: |
+      gcloud container clusters get-credentials ${{ inputs.gkeCluster }} \
+        --region ${{ inputs.region }}
+      
+      helm upgrade --install -n ${{ environment }} ${{ inputs.helmchartName }} \
+        ./chart \
+        --set imageTag=${{ inputs.imageTag }},domain=${{ inputs.domain}} \
+        --dry-run --debug
