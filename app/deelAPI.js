@@ -19,10 +19,12 @@ module.exports = () => {
       logger.info('Reversing ip');
       let ip = req.params.publicIP
       let response = {
-         reverseIP: ip.split('.').reverse().join('.')
+        status: 200,
+        body: {
+            reverseIP: ip.split('.').reverse().join('.')
+          }
       }
-
-      res.status(200).send(response);
+      res.status(response.status).send(response.body);
     }
   );
 }
