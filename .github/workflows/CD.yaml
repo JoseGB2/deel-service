@@ -6,7 +6,7 @@ name: Node.js CD
 on:
   push:
     branches:
-      - main
+      - feature/deployment
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -55,6 +55,7 @@ jobs:
       uses: ./.github/actions/deployment
       with:
         environment: dev
+        imageTag: ${{ steps.commit.outputs.short }}
 
   deploy-prod:
     runs-on: ubuntu-latest

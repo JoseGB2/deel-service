@@ -1,12 +1,12 @@
-name: 'Hello World'
-description: 'Greet someone'
+name: 'Helm Deployment'
+description: 'Generic template to deploy to dev and prod envs'
 inputs:
-  environment:  # id of input
-    description: 'cluster to make the deployment'
+  environment: 
+    description: 'environment to deploy'
     required: true
     default: 'dev'
 runs:
   using: "composite"
   steps:
-    - run: echo Hello ${{ inputs.environment}}.
+    - run: echo ${{ inputs.environment}}.
       shell: bash
