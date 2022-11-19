@@ -1,7 +1,7 @@
 name: 'Helm Deployment'
 description: 'Generic template to deploy to dev and prod envs'
 inputs:
-  environment: 
+  environment:
     description: 'environment to deploy'
     required: true
     default: 'dev'
@@ -19,16 +19,20 @@ inputs:
 runs:
   using: "composite"
   steps:
+  - name: 'Set up Cloud SDK'
+    uses: 'google-github-actions/setup-gcloud@v1'
   - name: Install Helm
+    shell: bash
     run: |
       curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
   # Deploy the Docker image to the GKE cluster
-  - name: Deploy to ${{ inputs.environment }}
+  - name: Helm Deploy 
+    shell: bash
     run: |
       gcloud container clusters get-credentials ${{ inputs.gkeCluster }} \
         --region ${{ inputs.region }}
       
-      helm upgrade --install -n ${{ environment }} ${{ inputs.helmchartName }} \
+      helm upgrade --install -n ${{ inputs.environment }} ${{ inputs.helmchartName }} \
         ./chart \
         --set imageTag=${{ inputs.imageTag }},domain=${{ inputs.domain}} \
         --dry-run --debug
