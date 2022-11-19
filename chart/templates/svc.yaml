@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: "{{ .Values.projectName }}-svc" 
   annotations:
-    cloud.google.com/backend-config: '{"ports": {"{{ .Values.svc.targetPort }}": "{{ .Values.projectName }}-backendconfig"}}'
+    cloud.google.com/backend-config: '{"ports": {"{{ .Values.svc.port }}": "{{ .Values.projectName }}-backendconfig"}}'
     cloud.google.com/neg: '{"ingress": true}' # Creates a NEG after an Ingress is created
 spec:
   type: ClusterIP

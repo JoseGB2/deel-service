@@ -14,4 +14,4 @@ svc:
   targetPort: 8080
 
 
-domain: deel-app.gbobo.net
+domain: deel-app.dev.gbobo.net
