@@ -61,9 +61,9 @@ jobs:
       with:
         environment: dev
         imageTag: ${{ steps.commit.outputs.short }}
-        gkeCluster: ${{ GKE_CLUSTER_NAME }}
-        region: ${{ GKE_REGION }}
-        helmChartName: ${{ HELM_PROJECT_NAME }}
+        gkeCluster: ${{ env.GKE_CLUSTER_NAME }}
+        region: ${{ env.GKE_REGION }}
+        helmChartName: ${{ env.HELM_PROJECT_NAME }}
         domain: 'deel-app.dev.gbobo.net'
 
 
@@ -78,7 +78,7 @@ jobs:
       with:
         environment: prod
         imageTag: ${{ steps.commit.outputs.short }}
-        gkeCluster: ${{ GKE_CLUSTER_NAME }}
-        region: ${{ GKE_REGION }}
-        helmChartName: ${{ HELM_PROJECT_NAME }}
+        gkeCluster: ${{ env.GKE_CLUSTER_NAME }}
+        region: ${{ env.GKE_REGION }}
+        helmChartName: ${{ env.HELM_PROJECT_NAME }}
         domain: 'deel-app.gbobo.net'
