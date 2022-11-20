@@ -7,6 +7,14 @@ on:
   push:
     branches:
       - main
+env:
+  GKE_CLUSTER_NAME: deel-cluster-prod
+  GKE_REGION: us-west1
+  HELM_PROJECT_NAME: deel-chart
+
+permissions:
+  id-token: write
+  contents: read
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -51,10 +59,18 @@ jobs:
     needs: [docker-build]
     steps:
     - uses: actions/checkout@v3
+    - id: commit
+      uses: pr-mpt/actions-commit-hash@v2
     - name: Deployment to dev env
       uses: ./.github/actions/deployment
       with:
         environment: dev
+        imageTag: ${{ steps.commit.outputs.short }}
+        gkeCluster: ${{ env.GKE_CLUSTER_NAME }}
+        region: ${{ env.GKE_REGION }}
+        helmChartName: ${{ env.HELM_PROJECT_NAME }}
+        domain: 'deel-app.dev.gbobo.net'
+
 
   deploy-prod:
     runs-on: ubuntu-latest
@@ -62,7 +78,14 @@ jobs:
     environment: prod
     steps:
     - uses: actions/checkout@v3
+    - id: commit
+      uses: pr-mpt/actions-commit-hash@v2
     - name: Deployment to prod env
       uses: ./.github/actions/deployment
       with:
         environment: prod
+        imageTag: ${{ steps.commit.outputs.short }}
+        gkeCluster: ${{ env.GKE_CLUSTER_NAME }}
+        region: ${{ env.GKE_REGION }}
+        helmChartName: ${{ env.HELM_PROJECT_NAME }}
+        domain: 'deel-app.gbobo.net'

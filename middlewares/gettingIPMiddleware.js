@@ -13,7 +13,7 @@ module.exports = (() => {
                 res.status(error.status).send(error.message);
             } else {
                 req.params = {
-                    publicIP: req.headers['x-forwarded-for'].split(',')[0]
+                    publicIP: req.headers['x-forwarded-for'].split(',')[0] // should validate not only string bu special characters and spaces
                 }
                 next()
             }

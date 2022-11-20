@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: "{{ .Values.projectName }}-svc" 
+  annotations:
+    cloud.google.com/backend-config: '{"ports": {"{{ .Values.svc.port }}": "{{ .Values.projectName }}-backendconfig"}}'
+    cloud.google.com/neg: '{"ingress": true}' # Creates a NEG after an Ingress is created
+spec:
+  type: ClusterIP
+  selector:
+    name: {{ .Values.projectName }}
+  ports:
+  - name: http
+    port: {{ .Values.svc.port }}
+    protocol: TCP
+    targetPort: {{ .Values.svc.targetPort }}

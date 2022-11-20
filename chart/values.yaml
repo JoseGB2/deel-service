@@ -1,0 +1,17 @@
+projectName: "deel-app"
+replicas: 3
+
+environment: dev
+
+imageRegistry: "a1h49kd84n6d/deel-service"
+imagePullSecret: dockerl
+imageTag: "v1.0.16"
+pullPolicy: "IfNotPresent"
+
+
+svc:
+  port: 5001
+  targetPort: 8080
+
+
+domain: deel-app.dev.gbobo.net

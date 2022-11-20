@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: "{{ .Values.projectName}}-ssl-cert"
+spec:
+  domains:
+    - {{ .Values.domain }}
+
