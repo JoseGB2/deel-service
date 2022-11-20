@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.projectName  }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Values.projectName }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+spec:
+  replicas: {{ .Values.replicas }}
+  selector:
+    matchLabels:
+      name: {{ .Values.projectName }}
+  template:
+    metadata:
+      labels:
+        name: {{ .Values.projectName }}
+    spec:
+      imagePullSecrets: 
+        - name: {{ .Values.imagePullSecret}}
+      containers:
+        - name: app
+          image: "{{ .Values.imageRegistry }}:{{ .Values.imageTag }}"
+          imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+          ports:
+            - containerPort: 8080

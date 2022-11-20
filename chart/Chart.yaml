@@ -1,0 +1,7 @@
+apiVersion: v2
+name: app-deel-service
+version: 1.0.1
+description: A Helm chart to install
+maintainers:
+  - name: gbonilla
+    email: bjoseg9@gmail.com

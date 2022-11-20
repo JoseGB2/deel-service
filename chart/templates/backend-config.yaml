@@ -1,0 +1,9 @@
+apiVersion: cloud.google.com/v1
+kind: BackendConfig
+metadata:
+  name: "{{ .Values.projectName }}-backendconfig"
+spec:
+  healthCheck:
+    requestPath: /health
+    port: {{ .Values.svc.targetPort}}
+
