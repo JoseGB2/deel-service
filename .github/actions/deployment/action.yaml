@@ -31,6 +31,7 @@ runs:
   - name: Install Helm
     shell: bash
     run: |
+      gcloud components install gke-gcloud-auth-plugin
       curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
   # Deploy the Docker image to the GKE cluster
   - name: Helm Deploy 
