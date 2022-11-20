@@ -19,6 +19,13 @@ inputs:
 runs:
   using: "composite"
   steps:
+  - id: auth
+    name: 'Authenticate to Google Cloud'
+    uses: 'google-github-actions/auth@v1'
+    with:
+      #token_format: 'access_token'
+      workload_identity_provider: 'projects/689152611462/locations/global/workloadIdentityPools/deel-github-pool/providers/deel-gha-provider'
+      service_account: 'deel-service-gha@deel-368916.iam.gserviceaccount.com '
   - name: 'Set up Cloud SDK'
     uses: 'google-github-actions/setup-gcloud@v1'
   - name: Install Helm
