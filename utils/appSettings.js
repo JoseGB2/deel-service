@@ -10,6 +10,7 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 
 const errorResponse = require('./errorResponse');
+const mongoose = require('mongoose')
 
 
 const fs = require('fs');
@@ -75,12 +76,31 @@ module.exports = class App {
       this.logger.defaultMeta = {
         service: this.config.api_name,
       };
+
+      //create dbconection
+      let dbName = process.env.DBNAME
+      let dbUser = process.env.DBUSER
+      let dbPass = process.env.DBPWD
+
+      let dbStringConnection = `mongodb+srv://${dbUser}:${dbPass}@${dbName}`
+      this.DBConfig = mongoose.connect(dbStringConnection);
+      this.DBConfig.model = ('Ip', require('../models/ipModel'));
+
+
+      // Enable CORS, allowing everithing NOT COOL, remove
+      this.server.use((req, res, next) => {
+        res.header('Access-Control-Allow-Origin', '*'); //
+        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+        next();
+      });
+      
       // TODO: improve this loading the route files
       require(`${this.appDir}/app/system`)();
       require(`${this.appDir}/app/deelAPI`)();
 
       //loading middlewares
-      this.loadMiddlewares();
+      this.loadMiddlewares(); 
+
     }).catch((err) => this.logger.error(err));
   }
 
@@ -118,13 +138,6 @@ module.exports = class App {
     this.logger.debug('setting up middlewares');
     // Disable X-Powered-By Express
     this.server.disable('x-powered-by');
-    // Enable CORS, allowing everithing NOT COOL, remove
-    this.server.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*'); //
-      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-      next();
-    });
-
     this.server.use(helmet());
     this.server.use(bodyParser.urlencoded({extended: false}));
     this.server.use(bodyParser.json());

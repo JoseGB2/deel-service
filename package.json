@@ -27,6 +27,7 @@
     "express": "^4.17.1",
     "helmet": "^3.21.3",
     "jsonschema": "^1.2.5",
+    "mongoose": "^6.7.2",
     "superagent": "^5.2.2",
     "winston": "^3.2.1"
   },
