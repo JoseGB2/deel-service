@@ -59,6 +59,8 @@ jobs:
     needs: [docker-build]
     steps:
     - uses: actions/checkout@v3
+    - id: commit
+      uses: pr-mpt/actions-commit-hash@v2
     - name: Deployment to dev env
       uses: ./.github/actions/deployment
       with:
@@ -76,6 +78,8 @@ jobs:
     environment: prod
     steps:
     - uses: actions/checkout@v3
+    - id: commit
+      uses: pr-mpt/actions-commit-hash@v2
     - name: Deployment to prod env
       uses: ./.github/actions/deployment
       with:
