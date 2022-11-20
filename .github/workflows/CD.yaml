@@ -6,7 +6,7 @@ name: Node.js CD
 on:
   push:
     branches:
-      - feature/deployment
+      - main
 env:
   GKE_CLUSTER_NAME: deel-cluster-prod
   GKE_REGION: us-west1
