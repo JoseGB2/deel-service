@@ -42,4 +42,4 @@ runs:
       
       helm upgrade --install -n ${{ inputs.environment }} ${{ inputs.helmchartName }} \
         ./chart \
-        --set imageTag=${{ inputs.imageTag }},domain=${{ inputs.domain}}
+        --set imageTag=${{ inputs.imageTag }},domain=${{ inputs.domain}},environment=${{ inputs.environment }}
