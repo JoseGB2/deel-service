@@ -1,6 +1,5 @@
 const app = require('../utils/AppCore');
-const { getPeople } = require('../libraries/deelDB')
-const superagent = require('superagent');
+const { insertIP } = require('../libraries/deelDB')
 const  { requestorIPMiddleware } = require('../middlewares/gettingIPMiddleware')
 
 module.exports = () => {
@@ -17,6 +16,7 @@ module.exports = () => {
     //implementing cache
     (req, res) => {
       logger.info('Reversing ip');
+
       let ip = req.params.publicIP
       let response = {
         status: 200,
@@ -24,7 +24,14 @@ module.exports = () => {
             reverseIP: ip.split('.').reverse().join('.')
           }
       }
-      res.status(response.status).send(response.body);
+
+      insertIP(ip, response.body.reverseIP)
+        .then(data => {
+          logger.info(`IP successfully stored in db: ${data.dateAdded}`);
+        })
+        .catch(error=> console.log(error))
+      
+        res.status(response.status).send(response.body);
     }
   );
 }

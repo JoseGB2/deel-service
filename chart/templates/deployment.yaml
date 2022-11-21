@@ -17,12 +17,18 @@ spec:
       labels:
         name: {{ .Values.projectName }}
     spec:
+      serviceAccountName: {{ .Values.projectName }}-sa
       imagePullSecrets: 
         - name: {{ .Values.imagePullSecret}}
       containers:
         - name: app
           image: "{{ .Values.imageRegistry }}:{{ .Values.imageTag }}"
           imagePullPolicy: {{ .Values.imagePullPolicy | quote }}
+          env:
+          {{- range $key, $value:= .Values.enVars }}
+          - name: {{ $key }}
+            value: "projects/{{ $.Values.googleProjectId }}/secrets/{{ $.Values.projectName }}-{{$.Values.environment }}-{{ $value }}/versions/latest"
+          {{- end }}
           readinessProbe:
             httpGet:
               path: /health

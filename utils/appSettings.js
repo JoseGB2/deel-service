@@ -10,6 +10,10 @@ const helmet = require('helmet');
 const bodyParser = require('body-parser');
 
 const errorResponse = require('./errorResponse');
+const mongoose = require('mongoose')
+
+const { SecretManagerServiceClient } = require('@google-cloud/secret-manager');
+const client = new SecretManagerServiceClient();
 
 
 const fs = require('fs');
@@ -75,12 +79,46 @@ module.exports = class App {
       this.logger.defaultMeta = {
         service: this.config.api_name,
       };
-      // TODO: improve this loading the route files
-      require(`${this.appDir}/app/system`)();
-      require(`${this.appDir}/app/deelAPI`)();
 
-      //loading middlewares
-      this.loadMiddlewares();
+      let dbConfigVariables = [process.env.DB_NAME, process.env.DB_USER, process.env.DB_PWD]
+      let gcloudPromises = []
+      let secretManagerResponse = {}
+
+      dbConfigVariables.forEach( secretName => {
+        gcloudPromises.push(client.accessSecretVersion({ name: secretName,}));
+      });
+
+      Promise.all(gcloudPromises).then(values => {
+        values.forEach(data => {
+          let payload = data[0].payload
+          secretManagerResponse[data[0].name.split('/')[3]] = payload.data.toString()
+        })
+
+        //create dbconection
+        let dbName = secretManagerResponse[process.env.DB_NAME.split('/')[3]]
+        let dbUser = secretManagerResponse[process.env.DB_USER.split('/')[3]]
+        let dbPass = secretManagerResponse[process.env.DB_PWD.split('/')[3]]
+
+        let dbStringConnection = `mongodb+srv://${dbUser}:${dbPass}@${dbName}`
+        this.DBConfig = mongoose.connect(dbStringConnection);
+        this.DBConfig.model = ('Ip', require('../models/ipModel'));
+
+
+        // Enable CORS, allowing everithing NOT COOL, remove
+        this.server.use((req, res, next) => {
+          res.header('Access-Control-Allow-Origin', '*'); //
+          res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+          next();
+        });
+        
+        // TODO: improve this loading the route files
+        require(`${this.appDir}/app/system`)();
+        require(`${this.appDir}/app/deelAPI`)();
+
+        //loading middlewares
+        this.loadMiddlewares(); 
+      })
+
     }).catch((err) => this.logger.error(err));
   }
 
@@ -118,13 +156,6 @@ module.exports = class App {
     this.logger.debug('setting up middlewares');
     // Disable X-Powered-By Express
     this.server.disable('x-powered-by');
-    // Enable CORS, allowing everithing NOT COOL, remove
-    this.server.use((req, res, next) => {
-      res.header('Access-Control-Allow-Origin', '*'); //
-      res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-      next();
-    });
-
     this.server.use(helmet());
     this.server.use(bodyParser.urlencoded({extended: false}));
     this.server.use(bodyParser.json());

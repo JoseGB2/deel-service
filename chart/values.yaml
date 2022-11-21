@@ -13,5 +13,11 @@ svc:
   port: 5001
   targetPort: 8080
 
-
+googleProjectId: deel-368916
 domain: deel-app.dev.gbobo.net
+
+enVars:
+  DB_NAME: 'DB_NAME'
+  DB_USER: 'DB_USER'
+  DB_PWD: 'DB_PWD'
+serviceAccountName: deel-service-account@deel-368916.iam.gserviceaccount.com 
